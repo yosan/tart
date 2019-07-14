@@ -84,6 +84,14 @@ describe('Snapshot', () => {
     })
   })
 
+  describe('firestoreURL', () => {
+    test('refresh data', async () => {
+      const user = await admin.firestore().collection('user').add({ name: 'test' })
+      const result = await Tart.fetch<User>(user)
+      expect(result.firestoreURL).toBeDefined()
+    })
+  })
+
   describe('makeNotSavedSnapshot', () => {
     describe('with id', () => {
       test('ref id is hoge.ref.id', async () => {
