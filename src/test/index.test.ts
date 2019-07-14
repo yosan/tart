@@ -20,7 +20,7 @@ beforeAll(() => {
   Tart.initialize(admin.firestore())
 })
 
-describe('fetch', async () => {
+describe('fetch', () => {
   describe('id not found', () => {
     test('catch error', async () => {
       expect.hasAssertions()
@@ -32,7 +32,7 @@ describe('fetch', async () => {
     })
   })
 
-  describe('exist id', async () => {
+  describe('exist id', () => {
     test('fetched', async () => {
       const data: User = { name: 'test' }
       const user = Tart.makeNotSavedSnapshot('user', data)
@@ -49,7 +49,7 @@ describe('fetch', async () => {
   })
 })
 
-describe('refresh', async () => {
+describe('refresh', () => {
   test('refresh data', async () => {
     const user = await admin.firestore().collection('user').add({ name: 'test' })
     const result = await Tart.fetch<User>(user)
@@ -62,7 +62,7 @@ describe('refresh', async () => {
   })
 })
 
-describe('Snapshot', async () => {
+describe('Snapshot', () => {
   describe('constructor', () => {
     test('args are ref and data', async () => {
       const data: User = { name: 'test' }
@@ -127,7 +127,7 @@ describe('Snapshot', async () => {
       expect(savedUser.data.updatedAt).toBeTruthy()
       expect(savedUser.ref.path).toEqual(user.ref.path)
     })
-    describe('save same id', async () => {
+    describe('save same id', () => {
       test('throwd ALREADY_EXISTS', async () => {
         const data: User = { name: 'test' }
         const user1 = Tart.makeNotSavedSnapshot('user', data)
