@@ -10,6 +10,8 @@ interface Game extends Tart.Timestamps {
   price: number
 }
 
+const MILLISEC_IN_TEN_SEC = 10 * 1000
+
 jest.setTimeout(20000)
 beforeAll(() => {
   const serviceAccount = require('../../sandbox-329fc-firebase-adminsdk.json')
@@ -40,9 +42,7 @@ describe('fetch', () => {
 
       const result = await Tart.fetch<User>(user.ref)
       expect(result.data.name).toBe('test')
-      expect(result.data.createdAt instanceof Date).toBeTruthy()
       expect(result.data.createdAt).toBeTruthy()
-      expect(result.data.updatedAt instanceof Date).toBeTruthy()
       expect(result.data.updatedAt).toBeTruthy()
       expect(result.ref.path).toBe(user.ref.path)
     })
@@ -127,12 +127,12 @@ describe('Snapshot', () => {
       await user.save()
       const savedUser = await Tart.fetch<User>(user.ref)
       expect(savedUser.data).toEqual(user.data)
-      expect(savedUser.data.createdAt!.getTime()).toBeDefined()
-      expect(savedUser.data.updatedAt!.getTime()).toBeDefined()
-      expect(savedUser.data.createdAt instanceof Date).toBeTruthy()
+      expect(savedUser.data.createdAt!.toMillis()).toBeDefined()
+      expect(savedUser.data.updatedAt!.toMillis()).toBeDefined()
       expect(savedUser.data.createdAt).toBeTruthy()
-      expect(savedUser.data.updatedAt instanceof Date).toBeTruthy()
       expect(savedUser.data.updatedAt).toBeTruthy()
+      expect(savedUser.data.createdAt!.toMillis() - new Date().getTime()).toBeLessThan(MILLISEC_IN_TEN_SEC)
+      expect(savedUser.data.updatedAt!.toMillis() - new Date().getTime()).toBeLessThan(MILLISEC_IN_TEN_SEC)
       expect(savedUser.ref.path).toEqual(user.ref.path)
     })
     describe('save same id', () => {
@@ -165,8 +165,10 @@ describe('Snapshot', () => {
 
         const savedUser = await Tart.fetch<User>(user.ref)
         expect(savedUser.data).toEqual(user.data)
-        expect(savedUser.data.createdAt!.getTime()).toBeDefined()
-        expect(savedUser.data.updatedAt!.getTime()).toBeDefined()
+        expect(savedUser.data.createdAt!.toMillis()).toBeDefined()
+        expect(savedUser.data.updatedAt!.toMillis()).toBeDefined()
+        expect(savedUser.data.createdAt!.toMillis() - new Date().getTime()).toBeLessThan(MILLISEC_IN_TEN_SEC)
+        expect(savedUser.data.updatedAt!.toMillis() - new Date().getTime()).toBeLessThan(MILLISEC_IN_TEN_SEC)
         expect(savedUser.ref.path).toEqual(user.ref.path)
       })
     })
@@ -211,6 +213,8 @@ describe('Snapshot', () => {
       const gameRefColData = await gameQuerySnapshot.docs[0].data()
       expect(gameRefColData.createdAt.toMillis()).toBeDefined()
       expect(gameRefColData.updatedAt!.toMillis()).toBeDefined()
+      expect(gameRefColData.createdAt!.toMillis() - new Date().getTime()).toBeLessThan(MILLISEC_IN_TEN_SEC)
+      expect(gameRefColData.updatedAt!.toMillis() - new Date().getTime()).toBeLessThan(MILLISEC_IN_TEN_SEC)
       const savedGame = await Tart.fetch<Game>('game', gameQuerySnapshot.docs[0].id)
       expect(savedGame.data).toEqual(game.data)
       expect(savedGame.ref.path).toEqual(game.ref.path)
@@ -237,6 +241,8 @@ describe('Snapshot', () => {
       const gameRefColData = await gameQuerySnapshot.docs[0].data()
       expect(gameRefColData.createdAt.toMillis()).toBeDefined()
       expect(gameRefColData.updatedAt!.toMillis()).toBeDefined()
+      expect(gameRefColData.createdAt!.toMillis() - new Date().getTime()).toBeLessThan(MILLISEC_IN_TEN_SEC)
+      expect(gameRefColData.updatedAt!.toMillis() - new Date().getTime()).toBeLessThan(MILLISEC_IN_TEN_SEC)
       const savedGame = await Tart.fetch<Game>('game', gameQuerySnapshot.docs[0].id)
       expect(savedGame.data).toEqual(game.data)
       expect(savedGame.ref.path).toEqual(game.ref.path)
@@ -291,9 +297,11 @@ describe('Snapshot', () => {
 
       const savedUser = await Tart.fetch<User>(user.ref)
       expect(savedUser.data.name).toEqual('new name')
-      expect(savedUser.data.createdAt!.getTime()).toBe(user.data.createdAt!.getTime())
-      expect(savedUser.data.updatedAt!.getTime()).toBe(user.data.updatedAt!.getTime())
-      expect(savedUser.data.updatedAt!.getTime()).not.toBe(user.data.createdAt!.getTime())
+      expect(savedUser.data.createdAt!.toMillis()).toBe(user.data.createdAt!.toMillis())
+      expect(savedUser.data.updatedAt!.toMillis()).toBe(user.data.updatedAt!.toMillis())
+      expect(savedUser.data.updatedAt!.toMillis()).not.toBe(user.data.createdAt!.toMillis())
+      expect(savedUser.data.createdAt!.toMillis() - new Date().getTime()).toBeLessThan(MILLISEC_IN_TEN_SEC)
+      expect(savedUser.data.updatedAt!.toMillis() - new Date().getTime()).toBeLessThan(MILLISEC_IN_TEN_SEC)
       expect(savedUser.ref.path).toEqual(user.ref.path)
     })
   })
@@ -310,9 +318,11 @@ describe('Snapshot', () => {
 
       const savedUser = await Tart.fetch<User>(user.ref)
       expect(savedUser.data.name).toEqual('new name')
-      expect(savedUser.data.createdAt!.getTime()).toBe(user.data.createdAt!.getTime())
-      expect(savedUser.data.updatedAt!.getTime()).toBe(user.data.updatedAt!.getTime())
-      expect(savedUser.data.updatedAt!.getTime()).not.toBe(user.data.createdAt!.getTime())
+      expect(savedUser.data.createdAt!.toMillis()).toBe(user.data.createdAt!.toMillis())
+      expect(savedUser.data.updatedAt!.toMillis()).toBe(user.data.updatedAt!.toMillis())
+      expect(savedUser.data.updatedAt!.toMillis()).not.toBe(user.data.createdAt!.toMillis())
+      expect(savedUser.data.createdAt!.toMillis() - new Date().getTime()).toBeLessThan(MILLISEC_IN_TEN_SEC)
+      expect(savedUser.data.updatedAt!.toMillis() - new Date().getTime()).toBeLessThan(MILLISEC_IN_TEN_SEC)
       expect(savedUser.ref.path).toEqual(user.ref.path)
     })
   })
